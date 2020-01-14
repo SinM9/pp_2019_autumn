@@ -32,14 +32,6 @@ std::vector<int> RandomMatrix(int row, int col) {
     return M;
 }
 
-std::vector<int>ConstVector(int n, int c) {
-    std::vector <int> vec(n);
-    for (int i = 0; i < n; i++) {
-        vec[i] = c;
-    }
-    return vec;
-}
-
 std::vector <int> MatrixOnVectorMultip(const std::vector <int> &matr, int row, int col, const std::vector <int> &vect) {
     int size;
     int rank;
@@ -70,12 +62,16 @@ std::vector <int> MatrixOnVectorMultip(const std::vector <int> &matr, int row, i
     }
 
     MPI_Status status;
-    std::vector <int> mat(col * delta, 0);
-    std::vector <int> tmp(delta);
     std::vector <int> res(row);
-
+    std::vector <int> mat(col * delta);
+    for (int i = 0; i < col * delta; i++) {
+        mat[i] = 0;
+    }
+    std::vector <int> tmp(delta);
+	
     if (rank == 0) {
-        tmp.resize(delta + ost);
+        if (ost > 0)
+            tmp.resize(delta + ost);
         for (int i = 0; i < col * (delta + ost); i += col) {
             for (int j = 0; j < col; j++)
                 tmp[i / col] += matr[i + j] * vect[j];
@@ -106,4 +102,16 @@ std::vector <int> MatrixOnVectorMultip(const std::vector <int> &matr, int row, i
             return err;
         }
     }
+}
+
+std::vector<int> MatrixOnVectorSenq(const std::vector <int>& matr, int row, int col, const std::vector <int>& vect) {
+    std::vector <int> res(row);
+    for (int i = 0; i < row; i++) {
+        int temp = 0;
+        for (int j = 0; j < col; j++) {
+            temp += matr[i * col + j] * vect[j];
+        }
+        res[i] = temp;
+    }
+    return res;
 }
