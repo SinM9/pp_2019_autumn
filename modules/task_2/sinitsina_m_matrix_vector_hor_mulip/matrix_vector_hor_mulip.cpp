@@ -68,7 +68,6 @@ std::vector <int> MatrixOnVectorMultip(const std::vector <int> &matr, int row, i
         mat[i] = 0;
     }
     std::vector <int> tmp(delta);
-	
     if (rank == 0) {
         if (ost > 0)
             tmp.resize(delta + ost);
